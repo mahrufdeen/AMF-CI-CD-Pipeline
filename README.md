@@ -44,12 +44,3 @@ This project reflects real-world telecom scenarios where **Packet Core network f
 
 ## 📫 Connect With Me
 * LinkedIn: https://www.linkedin.com/in/moruf-kelani-19689882/
-
-## ⚡ Summary
-This project demonstrates practical experience in:
-* Cloud-native telecom systems
-* DevOps automation
-* Kubernetes-based deployments
-* CI/CD pipeline design
-
-> 🚀 Built as part of my journey into Cloud-Native Telecom & DevOps Engineering
