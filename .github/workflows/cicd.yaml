@@ -9,19 +9,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     - name: Build Docker image
       run: docker build -t cnf-app ./app
 
-    - name: Set up Kind
-      uses: helm/kind-action@v1
+    # ✅ Install kind
+    - name: Install kind
+      run: |
+        curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+        chmod +x ./kind
+        sudo mv ./kind /usr/local/bin/kind
 
-    - name: Load image
-      run: kind load docker-image cnf-app
+    # ✅ Create cluster
+    - name: Create kind cluster
+      run: kind create cluster --name demo
 
-    - name: Deploy Helm
+    # ✅ Set kubeconfig explicitly (important fix)
+    - name: Set kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        kind get kubeconfig --name demo > $HOME/.kube/config
+
+    # ✅ Verify cluster (CRITICAL DEBUG STEP)
+    - name: Check nodes
+      run: kubectl get nodes
+
+    # ✅ Load image
+    - name: Load image into kind
+      run: kind load docker-image cnf-app --name demo
+
+    # ✅ Install Helm
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+
+    # ✅ Deploy
+    - name: Deploy with Helm
       run: helm install cnf-app ./helm/cnf-app
 
-    - name: Verify
+    # ✅ Verify pods
+    - name: Verify deployment
       run: kubectl get pods
